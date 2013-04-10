@@ -45,7 +45,8 @@ module Rack
         :headers => {
           :Accept => @params[:format] == "json" ? "application/json" : "application/atom+xml"
         },
-        :userpwd => "#{@params[:login]}:#{@params[:password]}"
+        :username => @params[:login],
+        :password => @params[:password]
       }))
       @error = response.body
       @params[:async] && response.code == 202 || response.code == 204 # We return true to indicate the status.
@@ -71,7 +72,8 @@ module Rack
           :'hub.topic' => url,
           :'hub.callback' =>  generate_callback(url, feed_id)
         },
-        :userpwd => "#{@params[:login]}:#{@params[:password]}"
+        :username => @params[:login],
+        :password => @params[:password]
       }))
       @error = response.body
       @params[:async] && response.code == 202 || response.code == 204 # We return true to indicate the status.
@@ -107,6 +109,7 @@ module Rack
     end
 
     def call(env)
+      binding.pry if env['PATH_INFO'] =~ /superfeedr/
       req = Rack::Request.new(env)
       if env['REQUEST_METHOD'] == 'GET' && feed_id = env['PATH_INFO'].match(/\/superfeedr\/feed\/(.*)/)
         # Verification of intent!
