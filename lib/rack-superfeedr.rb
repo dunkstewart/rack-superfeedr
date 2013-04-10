@@ -109,7 +109,6 @@ module Rack
     end
 
     def call(env)
-      binding.pry if env['PATH_INFO'] =~ /superfeedr/
       req = Rack::Request.new(env)
       if env['REQUEST_METHOD'] == 'GET' && feed_id = env['PATH_INFO'].match(/\/superfeedr\/feed\/(.*)/)
         # Verification of intent!
